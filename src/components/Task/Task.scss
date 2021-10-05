@@ -1,0 +1,21 @@
+@import '_setting.scss';
+
+
+$column-border-radius: 5px;
+$card-border-radius: 4px;
+ li.task-item{
+    background-color: white;
+    padding: $gap;
+    border-radius: $card-border-radius;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.1);
+    &:not(:last-child){ // không phải phần tử li cuối cùng
+      margin-bottom: $gap;
+    }
+    img{
+      max-width: 100%;
+      display: block;
+      margin: 1rem 0;
+      border-top-left-radius: $column-border-radius;
+      border-top-right-radius: $column-border-radius;
+    }
+  }
