@@ -2,9 +2,12 @@
 
 
  .board-content{
+    height: $board-content-height;
     overflow-x:auto ;
-    display: flex;
-    margin:0 $gap $gap;
+    // display: flex;
+    // margin:0 $gap $gap;
+    overflow-x: auto;
+    overflow-y:hidden;
     // custom scrollbar horizontal:
     &::-webkit-scrollbar{
       -webkit-appearance: none ;
@@ -22,6 +25,10 @@
       background:  darken($common-element-bg,25);
      
     }
-
+    .column-drop-preview {
+      background-color: rgba(150, 150, 200, 0.1);
+      border: 1px dashed #abc;
+      margin: 5px 45px 5px 5px;
+    }
   
   }
