@@ -2,11 +2,11 @@
 
 
  .board-content{
+   display: flex;
     height: $board-content-height;
     overflow-x:auto ;
     // display: flex;
     // margin:0 $gap $gap;
-    overflow-x: auto;
     overflow-y:hidden;
     // custom scrollbar horizontal:
     &::-webkit-scrollbar{
@@ -29,6 +29,20 @@
       background-color: rgba(150, 150, 200, 0.1);
       border: 1px dashed #abc;
       margin: 5px 45px 5px 5px;
+    }
+    .add-new-column{
+      margin-left: $gap;
+      background-color: hsla(0,0%,100%,.24);
+      height: 32px;
+      line-height: 32px;
+      width: 250px;
+      padding: 4px 0px 4px 15px;
+      cursor:pointer;
+      color: white;
+      border-radius: $column-border-radius;
+      &:hover{
+        background-color: hsla(0,0%,100%,.34);
+      }
     }
   
   }

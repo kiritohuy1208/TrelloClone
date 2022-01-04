@@ -4,6 +4,7 @@ import "./BoardContent.scss";
 import {initialData} from "actions/initialData";
 import {isEmpty} from'lodash';
 import {mapOrder} from 'utilities/sort';
+import {applyDrag} from 'utilities/dragDrop';
 import { Container, Draggable } from "react-smooth-dnd";
 function BoardContent() {
 
@@ -19,7 +20,7 @@ function BoardContent() {
       // boardFromDb.columns.sort((a,b)=>{
       //   return boardFromDb.columnOrder.indexOf(a.id)  - boardFromDb.columnOrder.indexOf(b.id);
       // })
-
+      console.log("Use effec")
       setColumns( mapOrder(boardFromDb.columns,boardFromDb.columnOrder,'id'));
     }
   }, [])
@@ -27,7 +28,29 @@ function BoardContent() {
     return  <div className="not-found">Board not found</div>
   }
  const onColumnDrop = (dropResult) =>{
-    console.log(dropResult)
+    let newColumns = [...columns]
+    newColumns = applyDrag(newColumns,dropResult)
+   
+    // Cập nhật lại initdata
+    let newBoard = {...board}
+    newBoard.columnOrder = newColumns.map(c => c.id)
+    newBoard.columns = newColumns
+    setColumns(newColumns)
+    setBoard(newBoard) 
+
+  }
+  const onCardDrop = (columnId,dropResult) =>{
+    if(dropResult.removedIndex !== null || dropResult.addedIndex !== null){
+      let newColumns = [...columns]
+
+      let currentColumn = newColumns.find(x => x.id===columnId)
+      currentColumn.cards = applyDrag(currentColumn.cards,dropResult)
+      currentColumn.cardOrder = currentColumn.cards.map(i => i.id)
+      setColumns(newColumns)
+     
+      // console.log(dropResult)
+      // console.log(columnId)
+    }
   }
   return (
     <div className="board-content">
@@ -45,11 +68,14 @@ function BoardContent() {
         {
           columns.map((column,index)=>(
             <Draggable key={index}>
-              <Column column= {column}/>
+              <Column column= {column} onCardDrop={onCardDrop}/>
             </Draggable>
           ))
         }
         </Container>
+        <div className="add-new-column">
+            <i className="fa fa-plus icon"></i> Add another card
+        </div>
     </div>
   );
 }
