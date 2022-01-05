@@ -1,21 +1,44 @@
-@import '_setting.scss';
+@import "_setting.scss";
+@import "~bootstrap/scss/bootstrap";
 
-
-body{
+body {
   margin: 0;
   font-size: 14px;
   line-height: 1.3em;
   font-family: "Source Sans Pro", sans-serif;
 }
-.master-trello{
+.master-trello {
   height: 100vh;
   overflow: hidden;
   line-height: 1.3em;
   background-color: $board-bg-color;
   color: $app-main-text-color;
-  .icon{
+  .icon {
     font-size: 14px;
-    margin-right: 3px;
-    
+    margin:0 3px;
+  }
+  .bootstrap-ctn{
+    margin: 0 15px;
+    padding: 0;
+  }
+  // custom outline input
+  textarea:focus, 
+  textarea.form-control:focus, 
+  input.form-control:focus, 
+  input[type=text]:focus, 
+  input[type=password]:focus, 
+  input[type=email]:focus, 
+  input[type=number]:focus, 
+  [type=text].form-control:focus, 
+  [type=password].form-control:focus, 
+  [type=email].form-control:focus, 
+  [type=tel].form-control:focus, 
+  [contenteditable].form-control:focus {
+    box-shadow: none;
+    //border:1px solid #ccc
+  }
+  .btn:focus, .btn:active{
+    outline: none;
+    box-shadow: none;
   }
 }

@@ -1,81 +1,152 @@
 import Column from "components/Column/Column";
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./BoardContent.scss";
-import {initialData} from "actions/initialData";
-import {isEmpty} from'lodash';
-import {mapOrder} from 'utilities/sort';
-import {applyDrag} from 'utilities/dragDrop';
+import { initialData } from "actions/initialData";
+import { isEmpty } from "lodash";
+import { mapOrder } from "utilities/sort";
+import { applyDrag } from "utilities/dragDrop";
 import { Container, Draggable } from "react-smooth-dnd";
+import {
+  Container as BootStrapContainer,
+  Row,
+  Col,
+  Form,
+  Button,
+} from "react-bootstrap";
 function BoardContent() {
+  const [board, setBoard] = useState({});
+  const [columns, setColumns] = useState([]);
+  const [openNewColumnForm, setOpenNewColumnForm] = useState(false);
 
-  const [board, setBoard] = useState({})
-  const [columns,setColumns] =useState([])
-  
+  const newColumnInputRef = useRef(null); // to manage focus, text selection
+  const [newColumnTitle, setNewColumnTitle] = useState("");
+  const onNewColumnTitleChange = useCallback(
+    (e) => setNewColumnTitle(e.target.value),
+    []
+  );
   useEffect(() => {
-    const boardFromDb = initialData.boards.find(board => board.id === "board-1");
-    if(boardFromDb){
+    const boardFromDb = initialData.boards.find(
+      (board) => board.id === "board-1"
+    );
+    if (boardFromDb) {
       setBoard(boardFromDb);
-
-      //sort by columnOrder:
-      // boardFromDb.columns.sort((a,b)=>{
-      //   return boardFromDb.columnOrder.indexOf(a.id)  - boardFromDb.columnOrder.indexOf(b.id);
-      // })
-      console.log("Use effec")
-      setColumns( mapOrder(boardFromDb.columns,boardFromDb.columnOrder,'id'));
+      setColumns(mapOrder(boardFromDb.columns, boardFromDb.columnOrder, "id"));
     }
-  }, [])
-  if(isEmpty(board)){
-    return  <div className="not-found">Board not found</div>
+  }, []);
+  useEffect(() => {
+    if (newColumnInputRef && newColumnInputRef.current) {
+      newColumnInputRef.current.focus();
+      newColumnInputRef.current.select();
+    }
+  }, [openNewColumnForm]);
+  if (isEmpty(board)) {
+    return <div className="not-found">Board not found</div>;
   }
- const onColumnDrop = (dropResult) =>{
-    let newColumns = [...columns]
-    newColumns = applyDrag(newColumns,dropResult)
-   
+  const onColumnDrop = (dropResult) => {
+    let newColumns = [...columns];
+    newColumns = applyDrag(newColumns, dropResult);
+
     // Cập nhật lại initdata
-    let newBoard = {...board}
-    newBoard.columnOrder = newColumns.map(c => c.id)
-    newBoard.columns = newColumns
-    setColumns(newColumns)
-    setBoard(newBoard) 
+    let newBoard = { ...board };
+    newBoard.columnOrder = newColumns.map((c) => c.id);
+    newBoard.columns = newColumns;
+    setColumns(newColumns);
+    setBoard(newBoard);
+  };
+  const onCardDrop = (columnId, dropResult) => {
+    if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
+      let newColumns = [...columns];
 
-  }
-  const onCardDrop = (columnId,dropResult) =>{
-    if(dropResult.removedIndex !== null || dropResult.addedIndex !== null){
-      let newColumns = [...columns]
+      let currentColumn = newColumns.find((x) => x.id === columnId);
+      currentColumn.cards = applyDrag(currentColumn.cards, dropResult);
+      currentColumn.cardOrder = currentColumn.cards.map((i) => i.id);
+      setColumns(newColumns);
 
-      let currentColumn = newColumns.find(x => x.id===columnId)
-      currentColumn.cards = applyDrag(currentColumn.cards,dropResult)
-      currentColumn.cardOrder = currentColumn.cards.map(i => i.id)
-      setColumns(newColumns)
-     
       // console.log(dropResult)
       // console.log(columnId)
     }
-  }
+  };
+  const toggleOpenNewColumnForm = () =>
+    setOpenNewColumnForm(!openNewColumnForm);
+  const addNewColumn = () => {
+    if(!newColumnInputRef){
+      newColumnInputRef.current.focus();
+      return
+    }
+    const newColumnToAdd = {
+      id: Math.random.toString(36).substring(2,5),
+      boardId : board.id,
+      title: newColumnTitle.trim(),
+      cardOrder:[],
+      cards:[]
+    }
+    let newColumns = [...columns]
+    newColumns.push(newColumnToAdd)
+    //updateBoard
+    let newBoards = {...board}
+    newBoards.columnOrder = newColumns.map(c=>c.id)
+    newBoards.columns = newColumns
+    setBoard(newBoards)
+    setColumns(newColumns)
+    setNewColumnTitle('')
+    toggleOpenNewColumnForm()
+    
+  };
+
   return (
     <div className="board-content">
-       <Container
-          orientation="horizontal"
-          onDrop={onColumnDrop}
-          getChildPayload={index => columns[index]}
-          dragHandleSelector=".column-drag-handle"
-          dropPlaceholder={{
-            animationDuration: 150,
-            showOnTop: true,
-            className: 'column-drop-preview'
-          }}
-        >
-        {
-          columns.map((column,index)=>(
-            <Draggable key={index}>
-              <Column column= {column} onCardDrop={onCardDrop}/>
-            </Draggable>
-          ))
-        }
-        </Container>
-        <div className="add-new-column">
-            <i className="fa fa-plus icon"></i> Add another card
-        </div>
+      <Container
+        orientation="horizontal"
+        onDrop={onColumnDrop}
+        getChildPayload={(index) => columns[index]}
+        dragHandleSelector=".column-drag-handle"
+        dropPlaceholder={{
+          animationDuration: 150,
+          showOnTop: true,
+          className: "column-drop-preview",
+        }}
+      >
+        {columns.map((column, index) => (
+          <Draggable key={index}>
+            <Column column={column} onCardDrop={onCardDrop} />
+          </Draggable>
+        ))}
+      </Container>
+      <BootStrapContainer className="bootstrap-ctn">
+        {!openNewColumnForm && (
+          <Row>
+            <Col className="add-new-column" onClick={toggleOpenNewColumnForm}>
+              <i className="fa fa-plus icon"></i> Add another card
+            </Col>
+          </Row>
+        )}
+        {openNewColumnForm && (
+          <Row>
+            <Col className="enter-new-column">
+              <Form.Control
+                size="sm"
+                type="text"
+                placeholder="Small text"
+                className="input-enter-new-column"
+                ref={newColumnInputRef}
+                value={newColumnTitle}
+                onChange={onNewColumnTitleChange}
+                onKeyDown={(e) => (e.key==='Enter') && addNewColumn()}
+              />
+              <Button variant="success" size="sm" onClick={addNewColumn}>
+                Add column
+              </Button>
+              <span
+                onClick={toggleOpenNewColumnForm}
+                className="cancel-new-column"
+              >
+                {" "}
+                <i className="fa fa-times icon"></i>
+              </span>
+            </Col>
+          </Row>
+        )}
+      </BootStrapContainer>
     </div>
   );
 }

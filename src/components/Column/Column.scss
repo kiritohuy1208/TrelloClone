@@ -1,6 +1,6 @@
 @import '_setting.scss';
 
-$list-bg-color:#ebecf0;
+
 
 $column-header-heigth: 36px;
 $column-footer-heigth: 36px;
@@ -14,7 +14,7 @@ $column-height: calc(#{$board-content-height} - #{$gap*2});
 
     margin-left: $gap;
     > * { // lấy tất cả con của column
-      background-color: $list-bg-color ;
+      background-color: $column-bg-color ;
       
       padding: 0 8px;
     }
@@ -60,11 +60,11 @@ $column-height: calc(#{$board-content-height} - #{$gap*2});
        
       }
       &::-webkit-scrollbar-thumb:vertical{
-       background-color: darken($list-bg-color,25);
+       background-color: darken($column-bg-color,25);
        border-radius: 10px;
       }
       &::-webkit-scrollbar-track {
-        background:  darken($list-bg-color,15);
+        background:  darken($column-bg-color,15);
         border-radius: 10px; 
       }
       .card-ghost {
