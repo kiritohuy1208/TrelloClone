@@ -112,7 +112,9 @@ function Column(props) {
             ></Dropdown.Toggle>
 
             <Dropdown.Menu>
-              <Dropdown.Item>Add card</Dropdown.Item>
+              <Dropdown.Item onClick={toggleOpenNewCardForm}>
+                Add card
+              </Dropdown.Item>
               <Dropdown.Item
                 onClick={() => setShowConfirmModal(!showConfirmModal)}
               >
