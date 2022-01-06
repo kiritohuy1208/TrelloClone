@@ -7,7 +7,7 @@ function Card(props) {
     <div className="card-item .column-drag-handle">
       {card.cover && (
         <img
-          maxWidth="100%"
+          maxwidth="100%"
           className="card-cover"
           src={card.cover}
           alt=""

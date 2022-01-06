@@ -1,78 +1,75 @@
-@import '_setting.scss';
+@import "_setting.scss";
 
-
- .board-content{
-    display: flex;
-    height: $board-content-height;
-    overflow-x:auto ;
-    // display: flex;
-    // margin:0 $gap $gap;
-    overflow-y:hidden;
-    &::after{
-      content: '';
-      flex: 0 0 $gap;
-    }
-    // custom scrollbar horizontal:
-    &::-webkit-scrollbar{
-      -webkit-appearance: none ;
-     
-    } // combine => ul::::-webkit-scrollbar => it mean this.obj
-    &::-webkit-scrollbar:horizontal{
-      height: 11px;
-    }
-    &::-webkit-scrollbar-thumb{
-      background-color:$common-element-bg;
-      border-radius: 8px;
-      //border-bottom: 5px solid $list-bg-color;
-    }
-    &::-webkit-scrollbar-track {
-      background:  darken($common-element-bg,25);
-     
-    }
-    .column-drop-preview {
-      background-color: rgba(150, 150, 200, 0.1);
-      border: 1px dashed #abc;
-      margin: 5px 45px 5px 5px;
-    }
-    .add-new-column{
-      margin-left: $gap;
-      background-color: hsla(0,0%,100%,.24);
-      line-height: 32px;
-      width: 250px;
-      max-width: 250px;
-      padding: 4px 0px 4px 15px;
-      cursor:pointer;
-      color: white;
-      border-radius: $column-border-radius;
-      &:hover{
-        background-color: hsla(0,0%,100%,.34);
-      }
-    }
-    .enter-new-column{
-      margin-left: $gap;
-      width: 250px;
-      max-width: 250px;
-      background-color: $column-bg-color;
-      line-height: 32px;
-      padding: 4px 10px;
-      border-radius: $column-border-radius;
-      input.input-enter-new-column{
-        margin: 5px 0px;
-      }
-    
-      span.cancel-new-column{
-        margin-left: $gap;
-        cursor: pointer;
-        i{
-          font-size: 20px;
-          color: $alert-danger;
-          &:hover{
-            color: darken( $alert-danger, $amount: 10);
-          }
-         
-        }
-
-      }
-    }
-  
+.board-content {
+  display: flex;
+  height: $board-content-height;
+  overflow-x: auto;
+  // display: flex;
+  // margin:0 $gap $gap;
+  overflow-y: hidden;
+  &::after {
+    content: "";
+    flex: 0 0 $gap;
   }
+  // custom scrollbar horizontal:
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+  } // combine => ul::::-webkit-scrollbar => it mean this.obj
+  &::-webkit-scrollbar:horizontal {
+    height: 11px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: $common-element-bg;
+    border-radius: 8px;
+    //border-bottom: 5px solid $list-bg-color;
+  }
+  &::-webkit-scrollbar-track {
+    background: darken($common-element-bg, 25);
+  }
+  .column-drop-preview {
+    background-color: rgba(150, 150, 200, 0.1);
+    border: 1px dashed #abc;
+    margin: 5px 45px 5px 5px;
+  }
+  .add-new-column {
+    margin-left: $gap;
+    background-color: hsla(0, 0%, 100%, 0.24);
+    line-height: 32px;
+    width: 250px;
+    max-width: 250px;
+    padding: 4px 0px 4px 15px;
+    cursor: pointer;
+    color: white;
+    border-radius: $column-border-radius;
+    &:hover {
+      background-color: hsla(0, 0%, 100%, 0.34);
+    }
+  }
+  .enter-new-column {
+    margin-left: $gap;
+    width: 250px;
+    max-width: 250px;
+    background-color: $column-bg-color;
+    line-height: 32px;
+    padding: 4px 10px;
+    border-radius: $column-border-radius;
+    input.input-enter-new-column {
+      margin: 5px 0px;
+      &:focus {
+        border: 1px solid $input-border-color;
+      }
+    }
+
+    span.cancel-new-column {
+      margin-left: $gap;
+      cursor: pointer;
+      i {
+        font-size: 20px;
+        color: $alert-danger;
+        &:hover {
+          color: darken($alert-danger, $amount: 10);
+        }
+      }
+    }
+  }
+}

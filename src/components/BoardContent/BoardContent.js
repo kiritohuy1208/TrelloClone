@@ -61,38 +61,50 @@ function BoardContent() {
       currentColumn.cards = applyDrag(currentColumn.cards, dropResult);
       currentColumn.cardOrder = currentColumn.cards.map((i) => i.id);
       setColumns(newColumns);
-
-      // console.log(dropResult)
-      // console.log(columnId)
     }
   };
   const toggleOpenNewColumnForm = () =>
     setOpenNewColumnForm(!openNewColumnForm);
   const addNewColumn = () => {
-    if(!newColumnInputRef){
+    if (!newColumnInputRef) {
       newColumnInputRef.current.focus();
-      return
+      return;
     }
     const newColumnToAdd = {
-      id: Math.random.toString(36).substring(2,5),
-      boardId : board.id,
+      id: Math.random.toString(36).substring(2, 5),
+      boardId: board.id,
       title: newColumnTitle.trim(),
-      cardOrder:[],
-      cards:[]
-    }
-    let newColumns = [...columns]
-    newColumns.push(newColumnToAdd)
-    //updateBoard
-    let newBoards = {...board}
-    newBoards.columnOrder = newColumns.map(c=>c.id)
-    newBoards.columns = newColumns
-    setBoard(newBoards)
-    setColumns(newColumns)
-    setNewColumnTitle('')
-    toggleOpenNewColumnForm()
-    
-  };
+      cardOrder: [],
+      cards: [],
+    };
+    let newColumns = [...columns];
+    newColumns.push(newColumnToAdd);
+    let newBoards = { ...board };
+    newBoards.columnOrder = newColumns.map((c) => c.id);
+    newBoards.columns = newColumns;
 
+    setBoard(newBoards);
+    setColumns(newColumns);
+    setNewColumnTitle("");
+    toggleOpenNewColumnForm();
+  };
+  const onUpdateColumn = (column) => {
+    const columnIdToUpdate = column.id;
+    let newColumns = [...columns];
+    const columnIndexUpdate = newColumns.findIndex(
+      (c) => c.id === columnIdToUpdate
+    );
+    if (column._destroy) {
+      newColumns.splice(columnIndexUpdate, 1);
+    } else {
+      newColumns.splice(columnIndexUpdate, 1, column);
+    }
+    let newBoard = { ...board };
+    newBoard.columnOrder = newColumns.map((c) => c.id);
+    newBoard.columns = newColumns;
+    setColumns(newColumns);
+    setBoard(newBoard);
+  };
   return (
     <div className="board-content">
       <Container
@@ -108,7 +120,11 @@ function BoardContent() {
       >
         {columns.map((column, index) => (
           <Draggable key={index}>
-            <Column column={column} onCardDrop={onCardDrop} />
+            <Column
+              column={column}
+              onCardDrop={onCardDrop}
+              onUpdateColumn={onUpdateColumn}
+            />
           </Draggable>
         ))}
       </Container>
@@ -131,7 +147,7 @@ function BoardContent() {
                 ref={newColumnInputRef}
                 value={newColumnTitle}
                 onChange={onNewColumnTitleChange}
-                onKeyDown={(e) => (e.key==='Enter') && addNewColumn()}
+                onKeyDown={(e) => e.key === "Enter" && addNewColumn()}
               />
               <Button variant="success" size="sm" onClick={addNewColumn}>
                 Add column
@@ -140,7 +156,6 @@ function BoardContent() {
                 onClick={toggleOpenNewColumnForm}
                 className="cancel-new-column"
               >
-                {" "}
                 <i className="fa fa-times icon"></i>
               </span>
             </Col>

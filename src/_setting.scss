@@ -1,21 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600');
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600");
 
-$gap:10px;
+$gap: 10px;
 
-$navbar-app-height:5vh;
+$navbar-app-height: 5vh;
 $navbar-board-height: 6vh;
-$board-content-height:88vh;
+$board-content-height: 88vh;
 //colors
 $board-bg-color: #0079bf;
-$common-element-bg: rgba(255,255,255, .24);
-$app-main-text-color:#333;
-$column-bg-color:#ebecf0;
-$alert-danger:#ee5253;
+$common-element-bg: rgba(255, 255, 255, 0.24);
+$app-main-text-color: #333;
+$column-bg-color: #ebecf0;
+$alert-danger: #ee5253;
+$input-border-color: #0079bf;
 //Screens
 $screen-lg: 1201px;
 $screen-md: 992px;
 $screen-sm: 768px;
 $screen-phone: 480px;
-$screen-ip6-down: '(max-width:375px)';
+$screen-ip6-down: "(max-width:375px)";
 // Column radius
-$column-border-radius:5px;
+$column-border-radius: 5px;
