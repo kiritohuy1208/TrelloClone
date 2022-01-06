@@ -17,6 +17,8 @@ function BoardContent() {
   const [board, setBoard] = useState({});
   const [columns, setColumns] = useState([]);
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false);
+  const toggleOpenNewColumnForm = () =>
+    setOpenNewColumnForm(!openNewColumnForm);
 
   const newColumnInputRef = useRef(null); // to manage focus, text selection
   const [newColumnTitle, setNewColumnTitle] = useState("");
@@ -58,13 +60,14 @@ function BoardContent() {
       let newColumns = [...columns];
 
       let currentColumn = newColumns.find((x) => x.id === columnId);
+
       currentColumn.cards = applyDrag(currentColumn.cards, dropResult);
       currentColumn.cardOrder = currentColumn.cards.map((i) => i.id);
+      console.log(currentColumn);
       setColumns(newColumns);
     }
   };
-  const toggleOpenNewColumnForm = () =>
-    setOpenNewColumnForm(!openNewColumnForm);
+
   const addNewColumn = () => {
     if (!newColumnInputRef) {
       newColumnInputRef.current.focus();
@@ -88,6 +91,7 @@ function BoardContent() {
     setNewColumnTitle("");
     toggleOpenNewColumnForm();
   };
+
   const onUpdateColumn = (column) => {
     const columnIdToUpdate = column.id;
     let newColumns = [...columns];
@@ -105,6 +109,7 @@ function BoardContent() {
     setColumns(newColumns);
     setBoard(newBoard);
   };
+
   return (
     <div className="board-content">
       <Container
@@ -149,15 +154,14 @@ function BoardContent() {
                 onChange={onNewColumnTitleChange}
                 onKeyDown={(e) => e.key === "Enter" && addNewColumn()}
               />
-              <Button variant="success" size="sm" onClick={addNewColumn}>
-                Add column
-              </Button>
-              <span
-                onClick={toggleOpenNewColumnForm}
-                className="cancel-new-column"
-              >
-                <i className="fa fa-times icon"></i>
-              </span>
+              <div className="add-delete-area">
+                <Button variant="success" size="sm" onClick={addNewColumn}>
+                  Add column
+                </Button>
+                <span onClick={toggleOpenNewColumnForm} className="cancel-icon">
+                  <i className="fa fa-times icon"></i>
+                </span>
+              </div>
             </Col>
           </Row>
         )}

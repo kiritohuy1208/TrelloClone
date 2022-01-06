@@ -16,6 +16,7 @@ export const initialData = {
             "card-5",
             "card-6",
             "card-7",
+            "card-8",
           ],
           cards: [
             {
@@ -69,7 +70,7 @@ export const initialData = {
               cover: null,
             },
             {
-              id: "card-7",
+              id: "card-8",
               boardId: "board-1",
               columnId: "column-1",
               title: "Title of card 7",
@@ -91,14 +92,14 @@ export const initialData = {
               cover: null,
             },
             {
-              id: "card-4",
+              id: "card-5",
               boardId: "board-1",
               columnId: "column-2",
               title: "Title of card 2",
               cover: null,
             },
             {
-              id: "card-5",
+              id: "card-6",
               boardId: "board-1",
               columnId: "column-2",
               title: "Title of card 3",
@@ -127,7 +128,7 @@ export const initialData = {
               cover: null,
             },
             {
-              id: "card-7",
+              id: "card-8",
               boardId: "board-1",
               columnId: "column-3",
               title: "Title of card 3",
