@@ -14,7 +14,7 @@ import { cloneDeep } from "lodash";
 function Column(props) {
   const { column, onCardDrop, onUpdateColumn } = props;
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const cards = mapOrder(column.cards, column.cardOrder, "id");
+  const cards = mapOrder(column.cards, column.cardOrder, "_id");
 
   const [columnTitle, setColumnTitle] = useState("");
   const handleColumnTitleChange = useCallback((e) => {
@@ -71,14 +71,14 @@ function Column(props) {
     const newCard = {
       id: Math.random.toString(36).substring(2, 5),
       boardId: column.boardId,
-      columnId: column.id,
+      columnId: column._id,
       title: newCardTitle.trim(),
       cover: null,
     };
     // update column
     const columnUpdate = cloneDeep(column);
     columnUpdate.cards.push(newCard);
-    columnUpdate.cardOrder.push(newCard.id);
+    columnUpdate.cardOrder.push(newCard._id);
 
     onUpdateColumn(columnUpdate);
     setNewCardTitle("");
@@ -127,7 +127,7 @@ function Column(props) {
       </header>
       <div className="card-list">
         <Container
-          onDrop={(dropResult) => onCardDrop(column.id, dropResult)}
+          onDrop={(dropResult) => onCardDrop(column._id, dropResult)}
           getChildPayload={(index) => cards[index]}
           dragClass="card-ghost"
           dropClass="card-ghost-drop"
