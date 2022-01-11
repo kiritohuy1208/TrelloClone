@@ -11,6 +11,8 @@ import {
   saveContentAfterPressKeyDown,
 } from "../../utilities/contentEditable";
 import { cloneDeep } from "lodash";
+import { createNewCard, updateColumnApi } from "actions/ApiCall/index";
+
 function Column(props) {
   const { column, onCardDrop, onUpdateColumn } = props;
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -49,18 +51,27 @@ function Column(props) {
         ...column,
         _destroy: true,
       };
-      onUpdateColumn(newColumn);
+      updateColumnApi(newColumn._id, newColumn).then((updatedColumn) => {
+        //updatedColumn.cards = newColumn.cards;
+        onUpdateColumn(updatedColumn);
+      });
     }
 
     setShowConfirmModal(!showConfirmModal);
   };
-
+  // Update column
   const handleColumnTitleBlur = () => {
-    const newColumn = {
-      ...column,
-      title: columnTitle,
-    };
-    onUpdateColumn(newColumn);
+    // call APi update col:
+    if (columnTitle !== column.title) {
+      const newColumn = {
+        ...column,
+        title: columnTitle,
+      };
+      updateColumnApi(newColumn._id, newColumn).then((updatedColumn) => {
+        updatedColumn.cards = newColumn.cards;
+        onUpdateColumn(updatedColumn);
+      });
+    }
   };
   // card
   const addNewCard = () => {
@@ -69,20 +80,20 @@ function Column(props) {
       return;
     }
     const newCard = {
-      id: Math.random.toString(36).substring(2, 5),
       boardId: column.boardId,
       columnId: column._id,
       title: newCardTitle.trim(),
-      cover: null,
     };
-    // update column
-    const columnUpdate = cloneDeep(column);
-    columnUpdate.cards.push(newCard);
-    columnUpdate.cardOrder.push(newCard._id);
+    createNewCard(newCard).then((card) => {
+      const columnUpdate = cloneDeep(column);
+      columnUpdate.cards.push(card);
+      columnUpdate.cardOrder.push(card._id);
 
-    onUpdateColumn(columnUpdate);
-    setNewCardTitle("");
-    toggleOpenNewCardForm();
+      onUpdateColumn(columnUpdate);
+      setNewCardTitle("");
+      toggleOpenNewCardForm();
+    });
+    // update column
   };
 
   return (

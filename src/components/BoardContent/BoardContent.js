@@ -13,7 +13,7 @@ import {
   Form,
   Button,
 } from "react-bootstrap";
-import { fetchBoardDetails } from "actions/ApiCall/index";
+import { fetchBoardDetails, createNewColumn } from "actions/ApiCall/index";
 function BoardContent() {
   const [board, setBoard] = useState({});
   const [columns, setColumns] = useState([]);
@@ -31,6 +31,7 @@ function BoardContent() {
     const boardId = "61d9aae7a0e691e8c908ede6";
     fetchBoardDetails(boardId).then((board) => {
       setBoard(board);
+      //let columFilter = board.columns.filter((col) => col._destroy === false);
       setColumns(mapOrder(board.columns, board.columnOrder, "_id"));
     });
   }, []);
@@ -72,22 +73,23 @@ function BoardContent() {
       return;
     }
     const newColumnToAdd = {
-      id: Math.random.toString(36).substring(2, 5),
       boardId: board._id,
       title: newColumnTitle.trim(),
-      cardOrder: [],
-      cards: [],
     };
-    let newColumns = [...columns];
-    newColumns.push(newColumnToAdd);
-    let newBoards = { ...board };
-    newBoards.columnOrder = newColumns.map((c) => c._id);
-    newBoards.columns = newColumns;
 
-    setBoard(newBoards);
-    setColumns(newColumns);
-    setNewColumnTitle("");
-    toggleOpenNewColumnForm();
+    createNewColumn(newColumnToAdd).then((col) => {
+      let newColumns = [...columns];
+      newColumns.push(col);
+
+      let newBoards = { ...board };
+      newBoards.columnOrder = newColumns.map((c) => c._id);
+      newBoards.columns = newColumns;
+
+      setBoard(newBoards);
+      setColumns(newColumns);
+      setNewColumnTitle("");
+      toggleOpenNewColumnForm();
+    });
   };
 
   const onUpdateColumn = (column) => {
