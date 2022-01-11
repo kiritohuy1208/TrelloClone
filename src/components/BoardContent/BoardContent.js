@@ -1,8 +1,8 @@
 import Column from "components/Column/Column";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./BoardContent.scss";
-import { initialData } from "actions/initialData";
-import { isEmpty } from "lodash";
+//import { initialData } from "actions/initialData";
+import { isEmpty, cloneDeep } from "lodash";
 import { mapOrder } from "utilities/sort";
 import { applyDrag } from "utilities/dragDrop";
 import { Container, Draggable } from "react-smooth-dnd";
@@ -13,7 +13,15 @@ import {
   Form,
   Button,
 } from "react-bootstrap";
-import { fetchBoardDetails, createNewColumn } from "actions/ApiCall/index";
+
+import {
+  fetchBoardDetails,
+  createNewColumn,
+  updateBoardApi,
+  updateColumnApi,
+  updateCardApi,
+} from "actions/ApiCall/index";
+
 function BoardContent() {
   const [board, setBoard] = useState({});
   const [columns, setColumns] = useState([]);
@@ -45,25 +53,64 @@ function BoardContent() {
     return <div className="not-found">Board not found</div>;
   }
   const onColumnDrop = (dropResult) => {
-    let newColumns = [...columns];
+    let newColumns = cloneDeep(columns);
     newColumns = applyDrag(newColumns, dropResult);
 
     // Cập nhật lại initdata
-    let newBoard = { ...board };
+    let newBoard = cloneDeep(board);
     newBoard.columnOrder = newColumns.map((c) => c._id);
     newBoard.columns = newColumns;
     setColumns(newColumns);
     setBoard(newBoard);
+    if (dropResult.removedIndex !== dropResult.addedIndex) {
+      updateBoardApi(newBoard._id, newBoard).catch((error) => {
+        console.log(error);
+        setColumns(newColumns);
+        setBoard(board);
+      });
+    }
   };
   const onCardDrop = (columnId, dropResult) => {
     if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
-      let newColumns = [...columns];
+      let newColumns = cloneDeep(columns);
 
       let currentColumn = newColumns.find((x) => x._id === columnId);
 
       currentColumn.cards = applyDrag(currentColumn.cards, dropResult);
       currentColumn.cardOrder = currentColumn.cards.map((i) => i._id);
+
       setColumns(newColumns);
+
+      if (dropResult.removedIndex !== null && dropResult.addedIndex !== null) {
+        // Move card in the same column:
+        if (dropResult.removedIndex !== dropResult.addedIndex) {
+          updateColumnApi(currentColumn._id, currentColumn).catch(() =>
+            setColumns(columns)
+          );
+        }
+      } else {
+        // Move card in the another column:
+        // update columnId card
+        // update lại column có card bị di chuyển
+        if (!dropResult.addedIndex) {
+          updateColumnApi(currentColumn._id, currentColumn).catch(() =>
+            setColumns(columns)
+          );
+        }
+        // Khác column
+        if (dropResult.removedIndex == null) {
+          let currentCard = cloneDeep(dropResult.payload);
+          let dataObject = {
+            columnUpdate: currentColumn,
+            cardupdate: currentCard,
+          };
+
+          currentCard.columnId = currentColumn._id;
+          updateCardApi(currentCard._id, dataObject).catch(() =>
+            setColumns(columns)
+          );
+        }
+      }
     }
   };
 
